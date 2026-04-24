@@ -1,160 +1,141 @@
-Django XML CRUD API
-This project is a Django-based CRUD web service integrated with a MySQL database, designed to manage library book records through XML-based HTTP API endpoints.
+# Django REST Framework Items API
 
-Project Requirements
+This project is a Django-based CRUD web service integrated with a MySQL database, designed to manage item records through JSON-based HTTP API endpoints protected by JWT authentication.
+
+## Project Requirements
 The application meets the following functional and technical requirements:
 
-Framework: The project is built using the Django web framework (version 5.0.4) with no Django REST Framework used — only built-in Django tools and Python's standard xml.etree.ElementTree library.
+- **Framework**: The project is built using the Django web framework (version 5.0.4) and Django REST Framework for API construction.
+- **Authentication**: Uses `djangorestframework-simplejwt` to secure endpoints. All item operations require a valid JWT bearer token.
+- **Database Configuration**: The Django project is configured to use MySQL as the backend database (`django_items_db`), with proper connection settings defined in `settings.py`.
+- **Application & Model**: A Django application (`items`) has been created containing a model (`Item`) that defines a database table with the fields: `name`, `description`, `price`, `quantity`, `created_at`, and `updated_at`.
+- **Migrations**: Database migrations successfully create the `items` table in MySQL.
+- **JSON Request & Response Handling**: All client requests must be sent in JSON format. The server uses Django REST Framework serializers to parse and validate incoming JSON data. All responses are returned strictly in valid JSON format.
+- **Complete CRUD Functionality**:
+  - **Create** (`POST /api/items/`): Accepts JSON body and inserts a new item record.
+  - **Retrieve All** (`GET /api/items/`): Returns all item records as JSON.
+  - **Retrieve One** (`GET /api/items/<id>/`): Returns a single item record by ID as JSON.
+  - **Update** (`PUT /api/items/<id>/` and `PATCH /api/items/<id>/`): Accepts JSON body and updates an existing item record.
+  - **Delete** (`DELETE /api/items/<id>/`): Removes an item record.
+- **Error Handling**: Proper JSON-based error responses are returned for all failure cases (e.g., unauthorized `401`, not found `404`, bad request `400`).
+- **URL Routing**: Routing is configured in `items_project/urls.py` and `items/urls.py`.
 
-Database Configuration: The Django project is configured to use MySQL as the backend database (library_db), with proper connection settings defined in settings.py including host, port, charset, and strict mode.
+## Tech Stack
+- **Backend**: Django 5.0.4 (Python 3.11+)
+- **API Framework**: Django REST Framework
+- **Authentication**: Simple JWT
+- **Database**: MySQL 8.0 (via `mysqlclient` / `PyMySQL`)
+- **CORS**: `django-cors-headers`
+- **API Testing**: Postman / Thunder Client
 
-Application & Model: A Django application (books) has been created containing a model (Book) that defines a database table with the following fields: title, author, year, genre, isbn, created_at, and updated_at — satisfying the minimum requirement of three fields.
-
-Migrations: Database migrations have been performed using python manage.py makemigrations and python manage.py migrate, successfully creating the books table in MySQL.
-
-XML Request Handling: All client requests must be sent in XML format. The server parses incoming XML using ET.fromstring() and extracts field values from XML tags.
-
-XML Response Handling: All server responses are returned strictly in valid XML format. JSON responses are not used anywhere in the project. Responses are built using ET.Element and ET.tostring() and returned as HttpResponse with content_type='application/xml'.
-
-Complete CRUD Functionality:
-
-Create (POST /api/books/): Accepts XML body and inserts a new book record into MySQL.
-Retrieve All (GET /api/books/): Returns all book records as XML.
-Retrieve One (GET /api/books/<id>/): Returns a single book record by ID as XML.
-Update (PUT /api/books/<id>/): Accepts XML body and updates an existing book record in MySQL.
-Delete (DELETE /api/books/<id>/): Removes a book record from MySQL and returns XML confirmation.
-Search (GET /api/books/search/?q=keyword): Searches books by title or author and returns XML results.
-Error Handling: Proper XML-based error responses are returned for all failure cases including missing required fields (400), book not found (404), duplicate ISBN (409), and invalid method (405).
-
-API Testing: All endpoints have been tested using Postman, including create, retrieve, update, delete, and error handling scenarios.
-
-URL Routing: Routing is configured in both library_project/urls.py and books/urls.py to ensure all endpoints function correctly under the /api/ prefix.
-
-Admin Verification: Records can be viewed and managed through the Django Administration panel at /admin after creating a superuser.
-
-MySQL Verification: Data stored in MySQL is verified using the MySQL command-line client with SELECT * FROM books;.
-
-Functional Validation
-The completed project clearly validates all CRUD operations through XML-based HTTP API endpoints:
-
-Create: Send POST http://127.0.0.1:8000/api/books/ with XML body to insert a book record.
-Read All: Send GET http://127.0.0.1:8000/api/books/ to retrieve all books as XML.
-Read One: Send GET http://127.0.0.1:8000/api/books/1/ to retrieve a specific book as XML.
-Update: Send PUT http://127.0.0.1:8000/api/books/1/ with XML body to update a book record.
-Delete: Send DELETE http://127.0.0.1:8000/api/books/1/ to remove a book record.
-Error Handling: Send invalid requests to verify proper XML error responses are returned.
-Admin Verification: Records can also be managed through the Django Administration panel at /admin.
-MySQL Verification: Run SELECT * FROM books; in MySQL CLI to confirm data is persisted.
-Tech Stack
-Backend: Django 5.0.4 (Python 3.11+)
-Database: MySQL 8.0
-XML Processing: Python built-in xml.etree.ElementTree
-CORS: django-cors-headers
-API Testing: Postman
-Project Structure
-library_project/
+## Project Structure
+```text
+items_project/
 │
 ├── manage.py                    # Django command-line utility
 ├── requirements.txt             # Python package dependencies
 ├── .gitignore                   # Files excluded from version control
 ├── README.md                    # Project documentation (this file)
+├── API_DOCS.md                  # Detailed API usage and testing guide
 │
-├── library_project/             # Django project configuration package
-│   ├── __init__.py              # Package init (PyMySQL setup if used)
-│   ├── settings.py              # Settings: MySQL config, installed apps, CORS
-│   ├── urls.py                  # Root URL config → routes /api/ to books app
-│   └── wsgi.py                  # WSGI entry point for deployment
+├── items_project/               # Django project configuration package
+│   ├── __init__.py              
+│   ├── settings.py              # Settings: MySQL config, DRF, JWT, CORS
+│   ├── urls.py                  # Root URL config → routes /api/ to items app and token auth
+│   └── wsgi.py                  # WSGI entry point
 │
-└── books/                       # Django application — core of the project
-    ├── __init__.py              # Package init
-    ├── apps.py                  # App configuration
-    ├── admin.py                 # Django admin registration for Book model
-    ├── models.py                # Book model → maps to MySQL 'books' table
-    ├── views.py                 # CRUD logic: XML parsing, ORM calls, XML responses
-    ├── urls.py                  # URL patterns for all book API endpoints
-    └── migrations/
-        ├── __init__.py
-        └── 0001_initial.py      # Auto-generated migration: creates books table
-API Endpoints
-Method	URL	Action
-GET	/api/books/	Retrieve all books
-POST	/api/books/	Create a new book
-GET	/api/books/<id>/	Retrieve one book by ID
-PUT	/api/books/<id>/	Update a book by ID
-DELETE	/api/books/<id>/	Delete a book by ID
-GET	/api/books/search/?q=keyword	Search books by title or author
-How to Clone and Run (School Lab Setup)
+└── items/                       # Django application — core of the project
+    ├── __init__.py              
+    ├── apps.py                  
+    ├── admin.py                 
+    ├── models.py                # Item model → maps to MySQL table
+    ├── serializers.py           # Data validation and JSON serialization
+    ├── views.py                 # Protected CRUD logic
+    ├── urls.py                  # URL patterns for item API endpoints
+    └── tests.py                 # Automated tests for auth and CRUD
+```
+
+## API Endpoints
+| Method | URL | Action | Auth Required |
+|---|---|---|---|
+| `POST` | `/api/token/` | Get JWT access and refresh tokens | No |
+| `POST` | `/api/token/refresh/` | Refresh an expired access token | No |
+| `GET` | `/api/items/` | Retrieve all items | Yes |
+| `POST` | `/api/items/` | Create a new item | Yes |
+| `GET` | `/api/items/<id>/` | Retrieve one item by ID | Yes |
+| `PUT` | `/api/items/<id>/` | Full update of an item by ID | Yes |
+| `PATCH`| `/api/items/<id>/` | Partial update of an item by ID | Yes |
+| `DELETE`| `/api/items/<id>/` | Delete an item by ID | Yes |
+
+## How to Clone and Run (School Lab Setup)
 Follow these steps exactly if you are setting up this project on a new machine such as a school laboratory computer.
 
-Prerequisites — install these first if not already installed
-Python 3.11 or 3.12 → https://www.python.org/downloads/
-MySQL 8.0 → https://dev.mysql.com/downloads/installer/
-Git → https://git-scm.com/downloads
-Step 1 — Open Command Prompt
-Press Win + R → type cmd → press Enter.
+**Prerequisites — install these first if not already installed**
+- Python 3.11 or 3.12 → https://www.python.org/downloads/
+- MySQL 8.0 → https://dev.mysql.com/downloads/installer/ (or via XAMPP)
+- Git → https://git-scm.com/downloads
 
-Step 2 — Clone the repository
+**Step 1 — Open Command Prompt**
+Press `Win + R` → type `cmd` or `powershell` → press Enter.
+
+**Step 2 — Clone the repository**
+```powershell
 cd Desktop
-git clone https://github.com/YOUR_USERNAME/library-xml-crud.git
-cd library-xml-crud
-Replace YOUR_USERNAME with the actual GitHub username.
+git clone https://github.com/YOUR_USERNAME/django-items-api.git
+cd django-items-api
+```
+Replace `YOUR_USERNAME` with the actual GitHub username.
 
-Step 3 — Create and activate a virtual environment
+**Step 3 — Create and activate a virtual environment**
+```powershell
 python -m venv venv
 venv\Scripts\activate
-Your prompt should now start with (venv).
+```
+Your prompt should now start with `(venv)`.
 
-Step 4 — Install dependencies
+**Step 4 — Install dependencies**
+```powershell
 pip install -r requirements.txt
-If mysqlclient fails to install, run this instead:
+```
 
-pip install PyMySQL
-Then open library_project/__init__.py and add:
+**Step 5 — Create the MySQL database**
+Open MySQL Command Line Client or phpMyAdmin, enter your root password, then run:
+```sql
+CREATE DATABASE django_items_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
 
-import pymysql
-pymysql.install_as_MySQLdb()
-Step 5 — Create the MySQL database
-Open MySQL Command Line Client from the Start Menu, enter your root password, then run:
-
-CREATE DATABASE library_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-EXIT;
-Step 6 — Update the database password in settings.py
-Open library_project/settings.py and update the PASSWORD field to match the MySQL root password on this machine:
-
+**Step 6 — Update the database password in settings.py**
+Open `items_project/settings.py` and update the `PASSWORD` field to match the MySQL root password on this machine:
+```python
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'library_db',
+        'NAME': 'django_items_db',
         'USER': 'root',
         'PASSWORD': 'your_mysql_password_here',   # ← change this
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
 }
-Step 7 — Run migrations
+```
+
+**Step 7 — Run migrations**
+```powershell
+python manage.py makemigrations
 python manage.py migrate
-You should see Applying books.0001_initial... OK in the output.
+```
 
-Step 8 — Create admin superuser (optional)
+**Step 8 — Create admin superuser (optional)**
+```powershell
 python manage.py createsuperuser
-Enter username admin and password admin1234.
+```
 
-Step 9 — Start the server
+**Step 9 — Start the server**
+```powershell
 python manage.py runserver
-Step 10 — Test the API
-Open Postman and test the endpoints listed in the API Endpoints table above.
+```
 
-The server runs at: http://127.0.0.1:8000
+**Step 10 — Test the API**
+See `API_DOCS.md` (or `API_USAGE.md`) for the exact Postman test flow, including getting a token and making requests.
 
-Example first request — GET all books:
-
-GET http://127.0.0.1:8000/api/books/
-Example create request — POST with XML body:
-
-<?xml version="1.0" encoding="UTF-8"?>
-<book>
-  <title>Clean Code</title>
-  <author>Robert C. Martin</author>
-  <year>2008</year>
-  <genre>Technology</genre>
-</book>
+The server runs at: `http://127.0.0.1:8000`
