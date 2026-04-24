@@ -1,0 +1,6 @@
+Django==5.0.4
+djangorestframework==3.15.1
+djangorestframework-simplejwt==5.3.1
+mysqlclient
+PyMySQL
+django-cors-headers
