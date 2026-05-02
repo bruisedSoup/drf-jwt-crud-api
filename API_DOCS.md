@@ -1,6 +1,7 @@
 # Django REST Framework Items API Usage Guide
 
-JWT-protected CRUD API for `Item` records using Django REST Framework and Simple JWT.
+JWT-protected CRUD API for `Item` records, serving as the backend for the React frontend.
+
 
 ### Authentication
 
@@ -51,8 +52,8 @@ Body:
 
 ```json
 {
-  "username": "admin",
-  "password": "your_password_here"
+  "username": "superuser",
+  "password": "superuser123"
 }
 ```
 
@@ -132,7 +133,7 @@ Body:
 
 ```json
 {
-  "name": "Mechanical Keyboard Pro",
+  "name": "Wonu Mechanical Keyboard Pro",
   "description": "RGB version",
   "price": "129.99",
   "quantity": 10
