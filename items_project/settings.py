@@ -37,10 +37,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',               # Django REST Framework
     'rest_framework_simplejwt',     # JWT Authentication
-    'items',                        # Our custom Items app
+    'items',           
+    'corsheaders',             # Our custom Items app
 ]
 
+# =============================================================================
+# CORS SETTINGS (ALLOW REACT FRONTEND)
+# =============================================================================
+CORS_ALLOW_ALL_ORIGINS = True 
+
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
