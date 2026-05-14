@@ -40,10 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',               # Django REST Framework
-    'rest_framework_simplejwt',     # JWT Authentication
+    'rest_framework',               
+    'rest_framework_simplejwt',     
     'items',           
-    'corsheaders',             # Our custom Items app
+    'corsheaders',         
+    'djoser',    
 ]
 
 # =============================================================================
@@ -140,3 +141,9 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'gonzales.isabella1414@gmail.com')    
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')   
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+DJOSER = {
+    'LOGIN_FIELD': 'username',
+    'USER_CREATE_PASSWORD_RETYPE': False,
+    'SERIALIZERS': {},
+}
